@@ -13,7 +13,7 @@ VALUES ('CS Head', 80000, 1),
 ('Head of R&D', 90000, 4),
 ('R&D Tester', 70000, 4);
 
-INSERT INTO employee (first, last, role_id, manager_id)
+INSERT INTO employees (first, last, role_id, manager_id)
 VALUES ('Clark', 'Kent', 1, null),
 ('Diana', 'Prince', 2, 1),
 ('Bruce', 'Wayne', 3, null),

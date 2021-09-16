@@ -70,6 +70,34 @@ const addDepartment = () => {
   .catch(err => console.log(err))
 }
 
+const addRole = () => {
+  prompt([
+    {
+      type: 'input',
+      name: 'title',
+      message: 'Role Title: '
+    },
+    {
+      type: 'number',
+      name: 'salary',
+      message: 'Role Salary: '
+    },
+    {
+      type: 'input',
+      name: 'department_id',
+      message: 'Role Department_id: '
+    }
+  ])
+    .then(newRole => {
+      db.query('INSERT INTO roles SET ?', newRole, err => {
+        if (err) { console.log(err) }
+        else { console.log(`------${newRole.title} role has been added------`) }
+        init()
+      })
+    })
+    .catch(err => console.log(err))
+}
+
 const addEmployee = () => {
   prompt([
     {
@@ -111,17 +139,19 @@ const addEmployee = () => {
 const viewDepartments = () => {
   db.query('SELECT departments.id, departments.name as department FROM departments', (err, departments) => {
     console.table(departments)
+    init()
   })
 }
 
 const viewRoles = () => {
   db.query('SELECT roles.id, roles.title, roles.salary, departments.name as department FROM roles LEFT JOIN departments ON roles.department_id = departments.id' , (err, roles) => {
     console.table(roles)
+    init()
   })
 }
 
 const viewEmployees = () => {
-  db.query(`SELECT employees.id, employees.first_name, employees.last_name, roles.title, roles.salary, department.name AS 'department', CONCAT(manager.first_name, ' ', manager.last_name) AS manager FROM employees LEFT JOIN roles ON employees.role_id = roles.id LEFT JOIN departments ON roles.department_id = departments.id LEFT JOIN employees manager ON manager.id = employees.managher.id`, (err, employees) => {
+  db.query(`SELECT employees.id, employees.first_name, employees.last_name, roles.title, roles.salary, departments.name AS 'department', CONCAT(manager.first_name, ' ', manager.last_name) AS 'manager' FROM employees LEFT JOIN roles ON employees.role_id = roles.id LEFT JOIN departments ON roles.department_id = departments.id LEFT JOIN employees manager ON manager.id = employees.manager_id`, (err, employees) => {
     console.table(employees)
     init()
   })
@@ -146,16 +176,16 @@ const updateEmployee = () => {
           message: `Employee's New Role: `,
           choices: roles.map(role => ({
             name: role.title,
-            value:  employee.id
+            value:  role.id
           }))
         },
         {
           type: 'list',
           name: 'manager_id',
           message: `Employee's New Manager: `,
-          choices: employees.map(role => ({
+          choices: employees.map(employee => ({
             name: `${employee.first_name} ${employee.last_name}`,
-              value: employee.id
+            value: employee.id
           }))
         }
       ])
@@ -166,6 +196,8 @@ const updateEmployee = () => {
         }
         db.query('UPDATE employees SET ? WHERE ?', [update, {id}], err => {
           if (err) {console.log(err)}
+          else { console.log('Employee has been updated!') }
+          init()
         })
       })
       .catch(err => console.log(err))

@@ -6,7 +6,7 @@ A node.js application which uses the user's input from inquirer to add info into
 
 ## Demo
 
-[Employee Tracker gif](./image/Employee_Tracker.gif)
+![Employee Tracker gif](./image/Employee_Tracker.gif)
 
 ## Installations
 
